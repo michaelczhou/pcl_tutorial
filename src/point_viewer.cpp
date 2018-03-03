@@ -14,7 +14,7 @@ int main(int argc,char* argv[] )
     // 创建点云（指针）
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
     //* 读入PCD格式的文件，如果文件不存在，返回-1
-    if (pcl::io::loadPCDFile<pcl::PointXYZ>("/home/zc/Desktop/shandian/map.pcd", *cloud) == -1)
+    if (pcl::io::loadPCDFile<pcl::PointXYZ>("/home/zc/project/pcl_tutorial/map.pcd", *cloud) == -1)
     {
        //文件不存在时，返回错误，终止程序。
        PCL_ERROR("Couldn't read file test_pcd.pcd \n");

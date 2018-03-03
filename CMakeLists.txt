@@ -21,7 +21,7 @@ include_directories( ${PCL_INCLUDE_DIRS} )
 add_definitions(${PCL_DEFINITIONS})
 
 
-add_executable( select select.cpp )
+add_executable( select src/select.cpp )
 target_link_libraries( select ${OpenCV_LIBS} ${PCL_LIBRARIES} ${Boost_LIBRARIES} )
-add_executable( point_viewer point_viewer.cpp )
+add_executable( point_viewer src/point_viewer.cpp )
 target_link_libraries( point_viewer ${OpenCV_LIBS} ${PCL_LIBRARIES} ${Boost_LIBRARIES} )
