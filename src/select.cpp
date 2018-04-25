@@ -1,4 +1,4 @@
-#if 0
+#if 1
 #include <iostream>
 
 #include <pcl/io/pcd_io.h>
@@ -48,7 +48,7 @@ void radius_search(pcl::PointXYZ searchPoint );
 
 //vector<int> cluster(int getIndex);
 
-int main1(int argc,char** argv)
+int main(int argc,char** argv)
 {
 //    if (pcl::io::loadPCDFile("/home/zc/Desktop/shandian/map.pcd", *cloud))
 //    {
