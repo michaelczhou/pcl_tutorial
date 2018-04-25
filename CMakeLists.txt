@@ -1,5 +1,5 @@
 cmake_minimum_required( VERSION 2.8 )
-project(pointSelection)
+project(pcl_tutorial)
 
 set( CMAKE_CXX_FLAGS "-std=c++11" )
 
