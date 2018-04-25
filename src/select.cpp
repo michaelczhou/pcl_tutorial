@@ -5,14 +5,13 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/visualization/pcl_visualizer.h>
-//#include <pcl/segmentation/region_growing.h>
 #include <pcl/kdtree/kdtree_flann.h>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include <boost/shared_ptr.hpp>
+//#include <boost/shared_ptr.hpp>
 
 using namespace std;
 using namespace pcl;
@@ -35,7 +34,8 @@ boost::mutex cloud_mutex;
 typedef pcl::PointXYZ PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
 
-struct callback_args{
+struct callback_args
+{
     // structure used to pass arguments to the callback function
     PointCloudT::Ptr clicked_points_3d;
     pcl::visualization::PCLVisualizer::Ptr viewerPtr;
@@ -50,49 +50,38 @@ void radius_search(pcl::PointXYZ searchPoint );
 
 int main(int argc,char** argv)
 {
-//    if (pcl::io::loadPCDFile("/home/zc/Desktop/shandian/map.pcd", *cloud))
-//    {
-//        std::cerr << "ERROR: Cannot open file (no intensity)" << std::endl;
-//        return 0;
-//    }
-
-    if (pcl::io::loadPCDFile("/home/zc/Desktop/shandian/map.pcd", *intensitycloud))
+    if (pcl::io::loadPCDFile<pcl::PointXYZ>("/home/zc/project/pcl_tutorial/map.pcd", *cloud))
     {
-        std::cerr << "ERROR: Cannot open file (intensity)" << std::endl;
+        std::cerr << "ERROR: Cannot open file " << std::endl;
         return 0;
     }
-    PointXYZ tmp;
-    for(int i=0;i< intensitycloud->points.size();i++){
-        tmp.x=intensitycloud->points[i].x;
-        tmp.y=intensitycloud->points[i].y;
-        tmp.z=intensitycloud->points[i].z;
-        cloud->push_back(tmp);
-    }
 
-    cloud_mutex.lock();    // for not overwriting the point cloud
+    //cloud_mutex.lock();    // for not overwriting the point cloud
 
     viewer->addPointCloud(cloud, "map");
     viewer->setCameraPosition(0, 0, -2, 0, -1, 0, 0);
+
     struct callback_args cb_args;
     PointCloudT::Ptr clicked_points_3d(new PointCloudT);
-    cb_args.clicked_points_3d = clicked_points_3d;
-    cb_args.viewerPtr = pcl::visualization::PCLVisualizer::Ptr(viewer);
+//    cb_args.clicked_points_3d = clicked_points_3d;
+//    cb_args.viewerPtr = pcl::visualization::PCLVisualizer::Ptr(viewer);
     viewer->registerAreaPickingCallback(ap_callback, (void*)&cloud);
     viewer->registerKeyboardCallback(kb_callback,NULL);
     viewer->registerPointPickingCallback(pp_callback, (void*)&cb_args);
     viewer->spin();
-    cloud_mutex.unlock();
+    //cloud_mutex.unlock();
 
 
-    while (!viewer->wasStopped())
-    {
-        viewer->spinOnce(100);
-        boost::this_thread::sleep(boost::posix_time::microseconds(100000));
-    }
+//    while (!viewer->wasStopped())
+//    {
+//        viewer->spinOnce(100);
+//        boost::this_thread::sleep(boost::posix_time::microseconds(100000));
+//    }
     return 1;
 }
 
-void radius_search(pcl::PointXYZ searchPoint ){
+void radius_search(pcl::PointXYZ searchPoint )
+{
     pcl::KdTreeFLANN<pcl::PointXYZ> kdtree;
     kdtree.setInputCloud(cloud);
     std::vector<int> pointIdxRadiusSearch;
@@ -197,61 +186,65 @@ vector<int> cluster(int getIndex){
 
 
 
-void kb_callback(const pcl::visualization::KeyboardEvent& event, void* args=NULL  ){
+void kb_callback(const pcl::visualization::KeyboardEvent& event, void* args=NULL  )
+{
     static int count=0;
     static int last_character_press=0;
     int character_press=event.getKeyCode();
-    if(last_character_press!=character_press && character_press!=(int)'x'){
+    //if(last_character_press!=character_press && character_press!=(int)'x')
+    if( character_press!=(int)'x')
+    {
         cout<<"chara"<<character_press<<endl;
         cout<<(count++)<<endl;
         last_character_press=character_press;
-        if(character_press==(int)'b'){
+        if(character_press==(int)'b')
+        {
             pcl::copyPointCloud(*lastcloud,*cloud);
             viewer->removePointCloud("map");
             viewer->addPointCloud(cloud,"map");
-        }else if(character_press==(int)'d'){
-            cout<<"b"<<endl;
+        }
+
+        else if(character_press==(int)'d')
+        {
+            cout<<"d"<<endl;
 
             sort(indices.begin(),indices.end());
-            for (int i=0;i<indices.size();i++){
-                cout<<indices[i]<<" ";
-            }
-            cout<<"ok"<<endl;
-            pcl::copyPointCloud(*cloud,*lastcloud);
-            pcl::PointCloud<pcl::PointXYZI>::iterator index = intensitycloud->begin();
-            pcl::PointCloud<pcl::PointXYZI>::iterator tmpindex;
-            int deletecount=0;
-            for(int i=0;i<indices.size();i++){
-                tmpindex=index+indices[i]-deletecount;
-                if(tmpindex->intensity<0.11){
-                    intensitycloud->erase(tmpindex);
-                    deletecount++;
-                }
 
+            pcl::copyPointCloud(*cloud,*lastcloud);
+            pcl::PointCloud<pcl::PointXYZ>::iterator index = cloud->begin();
+            pcl::PointCloud<pcl::PointXYZ>::iterator tmpindex;
+            
+            int deletecount=0;
+            for(int i=0;i<indices.size();i++)
+            {
+                tmpindex=index+indices[i]-deletecount;
+                cloud->erase(tmpindex);
+                deletecount++;
             }
             cout<<"delete done"<<endl;
             indices.clear();
             std::stringstream ss;
             std::string cloudName;
             cloudName += "_cloudName";
-            cout<<"num"<<num<<endl;
-            for(int i=0;i<redpoint.size();i++ ){
+            for(int i=0;i<redpoint.size();i++ )
+            {
                 viewer->removePointCloud(redpoint[i]);
-                //cloudName="";
             }
             redpoint.clear();
-            //num=0;
             viewer->removePointCloud("map");
             viewer->addPointCloud(cloud,"map");
-            //viewer->removePointCloud("");
+        }
 
-
-        }else if(character_press==(int)'a'){
+        else if(character_press==(int)'a')
+        {
             cout<<"enter the radius:";
             cin>>radius;
             cout<<endl<<endl<<"radius:"<<radius<<endl;
-        }else if(character_press==(int)'s'){
-            pcl::io::savePCDFileBinary("culledmap.pcd",*intensitycloud);
+        }
+
+        else if(character_press==(int)'s')
+        {
+            pcl::io::savePCDFileBinary("culledmap.pcd",*cloud);
             cout<<"save done"<<endl;
         }
     }
@@ -314,7 +307,7 @@ void pp_callback(const pcl::visualization::PointPickingEvent& event, void* args)
     if (getIndex == -1)
         return;
     PointT current_point;
-    cout<<"intensity::"<<intensitycloud->points[getIndex].intensity<<endl;
+    //cout<<"intensity::"<<intensitycloud->points[getIndex].intensity<<endl;
     event.getPoint(current_point.x, current_point.y, current_point.z);
     radius_search(current_point);
     return ;
@@ -363,7 +356,7 @@ void pp_callback(const pcl::visualization::PointPickingEvent& event, void* args)
 
 
 /* 3
-typedef pcl::PointXYZRGBA PointT_XYZ;
+typedef pcl::PointXYZA PointT_XYZ;
 typedef pcl::PointCloud<PointT_XYZ> PointCloudT_XYZ;
 
 

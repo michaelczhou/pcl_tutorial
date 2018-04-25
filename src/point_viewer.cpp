@@ -24,21 +24,21 @@ int main(int argc,char** argv)
        return -1;
     }
     //直接创造一个显示窗口
-     pcl::visualization::CloudViewer viewer1("Simple Cloud Viewer");
+//    pcl::visualization::CloudViewer viewer1("Simple Cloud Viewer");
     //再这个窗口显示点云
-    viewer1.showCloud(cloud);
-    while(1)
-    {
-    }
-
-//    viewer->addPointCloud(cloud, "map");
-//    viewer->setCameraPosition(0, 0, -2, 0, -1, 0, 0);
-
-//    while (!viewer->wasStopped())
+//    viewer1.showCloud(cloud);
+//    while(1)
 //    {
-//       viewer->spinOnce(100);
-//       boost::this_thread::sleep(boost::posix_time::microseconds(100000));
 //    }
+
+    viewer->addPointCloud(cloud, "map");
+    viewer->setCameraPosition(0, 0, -2, 0, -1, 1, 0);
+
+    while (!viewer->wasStopped())
+    {
+       viewer->spinOnce(100);
+       boost::this_thread::sleep(boost::posix_time::microseconds(100000));
+    }
     return 0;
 }
 #endif
