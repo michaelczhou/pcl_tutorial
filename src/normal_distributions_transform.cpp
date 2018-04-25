@@ -68,7 +68,7 @@ int main(int argc, char** argv)
   //计算需要的刚体变换以便将输入的源点云匹配到目标点云
   pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud (new pcl::PointCloud<pcl::PointXYZ>);
   ndt.align (*output_cloud, init_guess);
-
+  //此处output_cloud不能作为最终的源点云变换，因为上面对源点云进行了滤波处理
   std::cout << "Normal Distributions Transform has converged:" << ndt.hasConverged ()
             << " score: " << ndt.getFitnessScore () << std::endl;
 
