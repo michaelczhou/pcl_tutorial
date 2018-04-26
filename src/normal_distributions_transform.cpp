@@ -44,7 +44,7 @@ int main(int argc, char** argv)
 
   // Setting scale dependent NDT parameters根据输入数据的尺度设置NDT相关参数
   // Setting minimum transformation difference for termination condition.
-  ndt.setTransformationEpsilon (0.01);//为终止条件设置最小转换差异
+  ndt.setTransformationEpsilon (0.1);//为终止条件设置最小转换差异
   // Setting maximum step size for More-Thuente line search.
   ndt.setStepSize (0.1);//为More-Thuente线搜索设置最大步长
   //Setting Resolution of NDT grid structure (VoxelGridCovariance).
@@ -75,6 +75,7 @@ int main(int argc, char** argv)
   // Transforming unfiltered, input cloud using found transform.
   //使用创建的变换对未过滤的输入点云进行变换
   pcl::transformPointCloud (*input_cloud, *output_cloud, ndt.getFinalTransformation ());
+  std::cout << "transformation is: " << ndt.getFinalTransformation() << std::endl;
 
   // Saving transformed input cloud.
   //保存转换后的源点云作为最终的变换输出
@@ -82,25 +83,20 @@ int main(int argc, char** argv)
 
   // Initializing point cloud visualizer
   // 初始化点云可视化对象
-  boost::shared_ptr<pcl::visualization::PCLVisualizer>
-  viewer_final (new pcl::visualization::PCLVisualizer ("3D Viewer"));
+  boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer_final (new pcl::visualization::PCLVisualizer ("3D Viewer"));
   viewer_final->setBackgroundColor (0, 0, 0);
 
   // Coloring and visualizing target cloud (red).
   //对目标点云着色（红色）并可视化
-  pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ>
-  target_color (target_cloud, 255, 0, 0);
+  pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> target_color (target_cloud, 255, 0, 0);
   viewer_final->addPointCloud<pcl::PointXYZ> (target_cloud, target_color, "target cloud");
-  viewer_final->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE,
-                                                  1, "target cloud");
+  viewer_final->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE,1, "target cloud");
 
   // Coloring and visualizing transformed input cloud (green).
   //对转换后的源点云着色（绿色）并可视化
-  pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ>
-  output_color (output_cloud, 0, 255, 0);
+  pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> output_color (output_cloud, 0, 255, 0);
   viewer_final->addPointCloud<pcl::PointXYZ> (output_cloud, output_color, "output cloud");
-  viewer_final->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE,
-                                                  1, "output cloud");
+  viewer_final->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE,1, "output cloud");
 
   // Starting visualizer启动可视化
   viewer_final->addCoordinateSystem (1.0, "global");//显示xyz指示轴
