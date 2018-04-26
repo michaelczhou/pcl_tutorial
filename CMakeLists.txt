@@ -16,8 +16,9 @@ find_package(Boost REQUIRED  )
 include_directories(${Boost_INCLUDE_DIRS})
 
 # pcl
-find_package(PCL REQUIRED COMPONENT common io visualization kdtree filters )
+find_package(PCL REQUIRED )#COMPONENT common io visualization kdtree filters )
 include_directories( ${PCL_INCLUDE_DIRS} )
+link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
 
@@ -39,3 +40,6 @@ add_executable( passthrough src/passthrough.cpp )
 target_link_libraries( passthrough ${PCL_LIBRARIES} ${PCL_FILTERS_LIBRARIES} )
 add_executable( remove_outliers src/remove_outliers.cpp)
 target_link_libraries( remove_outliers ${PCL_LIBRARIES} ${PCL_FILTERS_LIBRARIES} )
+add_executable (pir src/pairwise_incremental_registration.cpp)
+target_link_libraries (pir ${PCL_LIBRARIES})
+
