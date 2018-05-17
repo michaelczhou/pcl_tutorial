@@ -40,6 +40,6 @@ add_executable( passthrough src/passthrough.cpp )
 target_link_libraries( passthrough ${PCL_LIBRARIES} ${PCL_FILTERS_LIBRARIES} )
 add_executable( remove_outliers src/remove_outliers.cpp)
 target_link_libraries( remove_outliers ${PCL_LIBRARIES} ${PCL_FILTERS_LIBRARIES} )
-add_executable (pir src/pairwise_incremental_registration.cpp)
-target_link_libraries (pir ${PCL_LIBRARIES})
+add_executable (icp_align src/pairwise_incremental_registration.cpp)
+target_link_libraries (icp_align ${PCL_LIBRARIES})
 

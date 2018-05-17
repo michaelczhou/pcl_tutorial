@@ -107,12 +107,16 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void* args=NULL
     static int count=0;
     static int last_character_press=0;
     int character_press = event.getKeyCode();
-    if(character_press != (int)'x')
+    if( last_character_press != character_press && character_press != (int)'x')
     {
         cout<<"chara"<<character_press<<endl;
         cout<<(count++)<<endl;
         last_character_press=character_press;
 
+        /*std::cout << "cloud_point = " << cloud -> points.size()
+        			<< "last_cloud_point = " << lastcloud -> points.size()
+        			<< std::endl;*/
+//cloud -> points.size() != lastcloud -> points.size() && 
         if(character_press==(int)'b')
         {
             cout << "press b " << endl;
@@ -121,13 +125,15 @@ void kb_callback(const pcl::visualization::KeyboardEvent& event, void* args=NULL
             viewer->addPointCloud(cloud,"map");
 
         }
-        else if(character_press==(int)'d')
+        else if( character_press==(int)'d')
         {
             cout<<"d"<<endl;
 
             sort(indices.begin(),indices.end());
 
+            //if( cloud -> points.size() != lastcloud -> points.size() )
             pcl::copyPointCloud(*cloud,*lastcloud);
+
             pcl::PointCloud<pcl::PointXYZ>::iterator index = cloud->begin();
             pcl::PointCloud<pcl::PointXYZ>::iterator tmpindex;
             int deletecount=0;
