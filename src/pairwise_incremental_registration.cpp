@@ -262,6 +262,9 @@ void pairAlign (const PointCloud::Ptr cloud_src, const PointCloud::Ptr cloud_tgt
     showCloudsRight(points_with_normals_tgt, points_with_normals_src);
   }
 
+  std::cout << "has cregonverged:" << reg.hasConverged() << " score: " <<
+  reg.getFitnessScore() << std::endl;
+  std::cout << reg.getFinalTransformation() << std::endl;
   //一旦找到最优的变换，ICP返回的变换是从源点云到目标点云的变换矩阵，我们求逆变换得到从目标点云到源点云的变换矩阵，并应用到目标点云，变换后的目标点云然后添加到源点云中，并且将点云和变换矩阵一起返回到主函数。
   // Get the transformation from target to source
   targetToSource = Ti.inverse();  // 得到目标点云到源点云的变换
@@ -313,6 +316,9 @@ int main(int argc, char** argv)
 
 	PointCloud::Ptr result (new PointCloud), source, target;
   Eigen::Matrix4f GlobalTransform = Eigen::Matrix4f::Identity (), pairTransform;
+  std::cout << "pairTransform = " << "\n"
+            << pairTransform
+            << std::endl;
   
   for (size_t i = 1; i < data.size (); ++i)   //循环处理所有点云
   {
@@ -332,7 +338,6 @@ int main(int argc, char** argv)
 
     //update the global transform用当前的两组点云之间的变换更新全局变换
     GlobalTransform = GlobalTransform * pairTransform;
-
     //save aligned pair, transformed into the first cloud's frame保存转换到第一个点云坐标下的当前配准后的两组点云result到文件i.pcd
     std::stringstream ss;
     ss << i << ".pcd";
